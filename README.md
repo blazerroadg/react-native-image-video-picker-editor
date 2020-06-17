@@ -25,7 +25,7 @@ npm i react-native-image-video-picker-editor --save
 
 ## Step 2 Dependencies
 ```bash
-npm @react-native-community/cameraroll @react-native-community/image-editor @react-native-community/masked-view react-native-camera react-native-vector-icons react-native-video react-native-video-helper react-native-easy-view-transformer
+npm install @react-native-community/cameraroll @react-native-community/image-editor @react-native-community/masked-view react-native-camera react-native-vector-icons react-native-video react-native-video-helper react-native-easy-view-transformer
 ```
 
 ### iOS
