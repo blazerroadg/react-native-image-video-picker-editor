@@ -1,8 +1,7 @@
 # react-native-image-video-picker-editor
 
 
-iOS/Android image picker with support for camera, video, configurable compression, multiple images and cropping
-
+iOS/Android image picker with support for camera, video, configurable compression, multiple images,image cropping , video trimming, max video lenght, photo take, video record, profile mask view
 ## Result
 
 <p align="left">
