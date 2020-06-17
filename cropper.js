@@ -1,7 +1,7 @@
 import { Platform, Dimensions } from 'react-native'
 import RNVideoHelper from 'react-native-video-helper';
 import ImageEditor from '@react-native-community/image-editor'
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 export const VidoUri = (video) => {
     let videoUri = video.uri;
@@ -75,7 +75,6 @@ export const ImageCropper = async (params) => {
     if (!positionX) positionX = 0;
     if (!positionY) positionY = 0;
     const exp = setSize(image);
-    console.log(image);
     var srcSize = exp.srcSize, fittedSize = exp.fittedSize;
     var offset = {
         x: 0,
@@ -121,6 +120,9 @@ export const ImageCropper = async (params) => {
 export const HandleCrop = async (param) => {
 
     const { selected, photos, cropperParams, cropSize, HEADER_MAX_HEIGHT } = param;
+    let { videoMaxLen, videoQuality } = param;
+    videoMaxLen = videoMaxLen ? videoMaxLen : 0;
+    videoQuality = videoQuality ? videoQuality : "low"
 
     const cropAreaSize = {
         width: HEADER_MAX_HEIGHT,
@@ -134,14 +136,14 @@ export const HandleCrop = async (param) => {
             if (image.playableDuration > 0) {
                 try {
                     const vr = await RNVideoHelper.compress(videoUri, {
-                        startTime: 0, // optional, in seconds, defaults to 0
-                        endTime: 30, //  optional, in seconds, defaults to video duration
-                        quality: 'low', // default low, can be medium or high
-                        defaultOrientation: 0 // By default is 0, some devices not save this property in metadata. Can be between 0 - 360
+                        startTime: 0,
+                        endTime: videoMaxLen,
+                        quality: videoQuality,
+                        defaultOrientation: 0
                     });
                     result.push({ type: 'video', assest: vr })
                 } catch (error) {
-                    console.log(error); // String with path to temporary compressed video
+                    console.log(error);
                 }
             }
             else {

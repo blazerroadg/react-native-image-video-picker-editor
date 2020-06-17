@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useRef } from 'react'
+import React from 'react'
 import {
   StyleSheet,
   Text,
@@ -7,16 +7,12 @@ import {
   Animated,
   Platform,
   SafeAreaView,
-  Button,
   PermissionsAndroid,
   Image,
   Modal,
   TouchableHighlight,
   ActivityIndicator,
   Alert
-
-
-
 } from 'react-native'
 
 
@@ -31,6 +27,7 @@ import MImageTitle from './MImageTitle'
 import { MButton } from './MButton';
 import { VidoUri } from './cropper'
 const { width, height } = Dimensions.get('window')
+
 const HEADER_MAX_HEIGHT = width;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 10 : 20;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -116,12 +113,11 @@ export default class MImagePicker extends React.Component {
   selectImage = (index) => {
 
     let newSelected = Array.from(this.state.selected)
+    const maxVideoLen = this.props.maxVideoLen || 0;
     if (newSelected.indexOf(index) === -1) {
       const selected = this.state.photos[index];
-      console.log("not here")
-      if (Platform.Version <= 18 && Platform.OS == "android" && selected.node.image.playableDuration > 30) {
-        console.log("here")
-        Alert.alert("Alert", "Please select the video lenght under 30 sec or update your andriod version to abvoe 18", [
+      if (Platform.Version <= 18 && Platform.OS == "android" && maxVideoLen > 0 && selected.node.image.playableDuration > maxVideoLen) {
+        Alert.alert("Alert", `Please select the video lenght under ${maxVideoLen} sec or update your andriod version to abvoe 18`, [
           {
             text: "Ok",
           }
@@ -157,7 +153,6 @@ export default class MImagePicker extends React.Component {
     if (newSelected.length > this.props.max && this.props.max != 1) return
 
     if (newSelected.length === 0) newSelected = []
-    // this.setState({ defaultImage: null })
     const inx = newSelected.length - 1;
     if (!this.state.photos[newSelected[inx]]) return;
     this.setState(
@@ -196,14 +191,14 @@ export default class MImagePicker extends React.Component {
       const granted2 = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
-          'title': 'Access Storage222',
-          'message': 'Access Storage for the pictures2222'
+          'title': 'Access Storage',
+          'message': 'Access Storage for the pictures'
         }
       )
       if (granted2 === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use read from the storage222")
+        console.log("You can use read from the storage")
       } else {
-        console.log("Storage permission denied22")
+        console.log("Storage permission denied")
       }
     } catch (err) {
       console.warn(err)
@@ -274,8 +269,6 @@ export default class MImagePicker extends React.Component {
       nsl[index] = nsl[index] + 1;
     }
     const nnsl = [0, ...nsl];
-    console.log(assest)
-
     this.setState(
       {
         defaultImage: assest,
@@ -386,7 +379,6 @@ export default class MImagePicker extends React.Component {
 
   renderVideo(video) {
     const videoUri = VidoUri(video);
-    console.log(videoUri)
 
     return (
       <TouchableHighlight
@@ -449,11 +441,10 @@ export default class MImagePicker extends React.Component {
         >
           <ViewTransformer
             ref={this.transformView}
-            maxScale={5} // 2 times zoom
+            maxScale={this.props.maxScale}
             onTransformGestureReleased={(e) => this.setCropperParams(e)}
             onSingleTapConfirmed={this.transformerPressed}
             style={{ backgroundColor: "#ccc", position: 'absolute', width: '100%', height: '100%', zIndex: 10 }}
-          // onLayout={() => this.transformView.current.updateTransform({ scale: 2 })}
           >
             <Image source={{ uri: image.uri }} style={{ width: width, height: width }} />
 
@@ -466,7 +457,7 @@ export default class MImagePicker extends React.Component {
     return (
       <ViewTransformer
         ref={this.transformView}
-        maxScale={5}
+        maxScale={this.props.maxScale}
         onTransformGestureReleased={(e) => this.setCropperParams(e)}
         onSingleTapConfirmed={this.transformerPressed}
         style={{ backgroundColor: "#ccc" }}
@@ -537,19 +528,15 @@ export default class MImagePicker extends React.Component {
             onEndReachedThreshold={height / 5}
             initialNumToRender={10}
             removeClippedSubviews={true}
-          // windowSize={50}
           />
           <Animated.View
-            // pointerEvents="none"
             style={[
               styles.header,
               { transform: [{ translateY: headerTranslate }], justifyContent: 'center', alignItems: 'center', backgroundColor: "#ccc" },
             ]}
           >
-
             {
               this.state.defaultImage && this.renderAsset(this.state.defaultImage)
-
             }
 
           </Animated.View>
@@ -559,9 +546,17 @@ export default class MImagePicker extends React.Component {
 
     )
   }
-  camera = <Modal style={{ width: width, height: height }}>
-    <MCamera onCancle={() => this.setState({ showCamera: false })} onPhotoTaked={this.photoTaked} />
-  </Modal>
+  camera = () => {
+    const config = this.props.cameraConfig || { camerPhotoTile: "Photo", cameraVideoTitle: "Video", cameraCancelTitle: "Cancle", maxVideoLen: 0, videoQuality: "480p" }
+    return (
+      <Modal style={{ width: width, height: height }}>
+        <MCamera
+          onCancle={() => this.setState({ showCamera: false })}
+          onPhotoTaked={this.photoTaked}
+          config={config}
+        />
+      </Modal>)
+  }
   activityIndicatorModla =
     <Modal
       animationType="fade"
@@ -577,7 +572,7 @@ export default class MImagePicker extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.showCamera ? this.camera : this.renderImages()}
+        {this.state.showCamera ? this.camera() : this.renderImages()}
       </View>
     )
   }

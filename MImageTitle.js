@@ -9,7 +9,7 @@ import {
     TouchableHighlight,
 } from 'react-native'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 class MImageTitle extends PureComponent {
     render() {
         const { item, index, selected, selectImage, selectedItemCount, singleSelect, paddingTop } = this.props
