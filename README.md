@@ -46,7 +46,13 @@ android {
 }
 
 ```
-## Step 3 Permissions
+
+## Step 3 link assests
+```bash
+react-native link
+```
+
+## Step 4 Permissions
 
 ### iOS add these to info.plist
 
