@@ -3,8 +3,13 @@
 
 iOS/Android image picker with support for camera, video, configurable compression, multiple images and cropping
 
+## Result
 
 <p align="left">
+  <img width=200 title="iOS Single Pick" src="https://github.com/blazerroad/react-native-image-video-picker-editor/blob/master/gifs/demo1.gif">
+  <img width=200 title="iOS Multiple Pick" src="https://github.com/blazerroad/react-native-image-video-picker-editor/blob/master/gifs/demo2.gif">
+  <img width=200 title="iOS Crop Normal" src="https://github.com/blazerroad/react-native-image-video-picker-editor/blob/master/gifs/demo3.gif">
+  <img width=200 title="iOS Crop Circular" src="https://github.com/blazerroad/react-native-image-video-picker-editor/blob/master/gifs/demo4.gif">
 </p>
 
 ## Important note
